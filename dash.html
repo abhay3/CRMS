@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRMS Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+        }
+
+        nav {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+        }
+
+        nav a {
+            color: #ecf0f1;
+            text-decoration: none;
+            padding: 10px;
+            margin-right: 20px;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        .dashboard-section {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .flex-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .flex-item {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>CRMS Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#customers">Customers</a>
+        <a href="#interactions">Interactions</a>
+        <a href="#tasks">Tasks</a>
+    </nav>
+
+    <main>
+        <section id="dashboard" class="dashboard-section">
+            <h2>Dashboard</h2>
+            <div class="flex-container">
+                <div class="flex-item">
+                    <h3>Total Customers</h3>
+                    <p>100</p>
+                </div>
+                <div class="flex-item">
+                    <h3>Open Interactions</h3>
+                    <p>20</p>
+                </div>
+                <div class="flex-item">
+                    <h3>Open Tasks</h3>
+                    <p>10</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="customers" class="dashboard-section">
+            <h2>Customer List</h2>
+            <button id="addCustomerButton" class="add-customer-button">Add Customer</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Spending</th>
+                    </tr>
+                </thead>
+                <tbody id="customerTableBody">
+                    <!-- Customer details will be displayed here -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="interactions" class="dashboard-section">
+            <h2>Interactions</h2>
+            <ul id="interactionList" class="interaction-list">
+                <!-- Interaction history will be displayed here -->
+            </ul>
+            <form id="addInteractionForm" class="add-interaction-form">
+                <textarea placeholder="Add a new interaction..." name="interaction" required></textarea>
+                <button type="submit">Add Interaction</button>
+            </form>
+        </section>
+
+        <section id="tasks" class="dashboard-section">
+            <h2>Tasks</h2>
+            <ul id="taskList" class="task-list">
+                <!-- Task list will be displayed here -->
+            </ul>
+            <form id="addTaskForm" class="add-task-form">
+                <input type="text" placeholder="Task description" name="task" required>
+                <input type="date" name="dueDate">
+                <button type="submit">Add Task</button>
+            </form>
+        </section>
+
+        <!-- New section for High Value Customers -->
+        <section id="highValueCustomers" class="dashboard-section">
+            <h2>High Value Customers</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Spending</th>
+                    </tr>
+                </thead>
+                <tbody id="highValueCustomerTableBody">
+                    <!-- High value customer details will be displayed here -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <!-- Modal for adding a new customer -->
+    <div id="addCustomerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddCustomerModal()">&times;</span>
+            <h2>Add New Customer</h2>
+            <form id="addCustomerForm" class="add-customer-form">
+                <input type="text" placeholder="Name" name="name" required>
+                <input type="email" placeholder="Email" name="email" required>
+                <input type="tel" placeholder="Phone" name="phone" required>
+                <input type="text" placeholder="Spending" name="Spending" required>
+                <button type="submit">Add Customer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // You can add JavaScript code here to handle dynamic interactions or fetch data from a server.
+        // This example is static and does not include actual data fetching.
+
+        // Dummy customer data for demonstration purposes
+    const dummyCustomers = [
+    { id: 1, name: 'John Doe', email: 'john.doe@example.com', phone: '(555) 123-4567', Spending: '100000' },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', phone: '(555) 987-6543', Spending: '1000000'},
+    {id: 3, name: 'Bill Wayne', email: 'billwayne@gmail.com', phone: '(555) 876-1234', Spending: '2000000'},
+    {id: 4, name: 'Bruce Wayne', email: 'brucewayne@gmail.com', phone: '(123) 576-2902', Spending: '10000000'}
+    // Add more dummy customer data as needed
+];
+
+        // Function to populate the high-value customer table with dummy data
+        function populateHighValueCustomerTable(highValueCustomers) {
+            const highValueCustomerTableBody = document.getElementById('highValueCustomerTableBody');
+
+            highValueCustomers.forEach(customer => {
+                const row = highValueCustomerTableBody.insertRow();
+                row.innerHTML = `
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.Spending}</td>
+                `;
+            });
+        }
+
+        // Filter high-value customers based on spending criteria
+        const highValueCustomers = dummyCustomers.filter(customer => parseInt(customer.Spending) > 1000000);
+
+        // Populate the high-value customer table with dummy data on page load
+        populateHighValueCustomerTable(highValueCustomers);
+        function populateCustomerTable(customers) {
+                const customerTableBody = document.getElementById('customerTableBody');
+
+                customers.forEach(customer => {
+                    const row = customerTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${customer.id}</td>
+                        <td>${customer.name}</td>
+                        <td>${customer.email}</td>
+                        <td>${customer.phone}</td>
+                        <td>${customer.Spending}</td>
+                    `;
+                });
+            }
+
+            // Populate the customer table with dummy data on page load
+            populateCustomerTable(dummyCustomers);
+
+                    // Handle button click to open the add customer modal
+            document.getElementById('addCustomerButton').addEventListener('click', openAddCustomerModal);
+
+                    // Function to open the add customer modal
+            function openAddCustomerModal() {
+                document.getElementById('addCustomerModal').style.display = 'block';
+            }
+    
+                    // Function to close the add customer modal
+            function closeAddCustomerModal() {
+                document.getElementById('addCustomerModal').style.display = 'none';
+            }
+    
+
+                    // Handle button click to open the add customer modal
+            document.getElementById('addCustomerButton').addEventListener('click', openAddCustomerModal);
+
+                // Function to open the add customer modal
+            function openAddCustomerModal() {
+                document.getElementById('addCustomerModal').style.display = 'block';
+            }
+
+                // Function to close the add customer modal
+            function closeAddCustomerModal() {
+                document.getElementById('addCustomerModal').style.display = 'none';
+            }
+
+
+
+                        // Dummy interaction data for demonstration purposes
+                const dummyInteractions = [
+                { id: 1, text: 'Had a follow-up call with John Doe.', timestamp: '2023-01-01T10:30:00Z' },
+                { id: 2, text: 'Sent an email to Jane Smith regarding the new product.', timestamp: '2023-01-02T14:45:00Z' },
+                // Add more dummy interaction data as needed
+            ];
+
+            // Function to populate the interaction list with dummy data
+            function populateInteractionList(interactions) {
+                const interactionList = document.getElementById('interactionList');
+
+                interactions.forEach(interaction => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <div class="interaction-text">${interaction.text}</div>
+                        <div class="interaction-timestamp">${formatTimestamp(interaction.timestamp)}</div>
+                    `;
+                    interactionList.appendChild(listItem);
+                });
+            }
+
+            // Function to format timestamp into a more readable format
+            function formatTimestamp(timestamp) {
+                const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                return new Date(timestamp).toLocaleDateString('en-US', options);
+            }
+
+            // Populate the interaction list with dummy data on page load
+            populateInteractionList(dummyInteractions);
+
+            // Handle form submission to add a new interaction
+            document.getElementById('addInteractionForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // For simplicity, this example just adds a new interaction to the list with the form data.
+                const formData = new FormData(event.target);
+                const interactionText = formData.get('interaction');
+                const timestamp = new Date().toISOString(); // Use the current timestamp
+
+                addInteractionToList({ text: interactionText, timestamp });
+                event.target.reset();
+            });
+
+            // Function to add a new interaction to the list
+            function addInteractionToList(interaction) {
+                const interactionList = document.getElementById('interactionList');
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <div class="interaction-text">${interaction.text}</div>
+                    <div class="interaction-timestamp">${formatTimestamp(interaction.timestamp)}</div>
+                `;
+                interactionList.prepend(listItem); // Add new interaction at the beginning of the list
+            }
+
+
+                // Dummy task data for demonstration purposes
+            const dummyTasks = [
+            { id: 1, description: 'Prepare sales report', dueDate: '2023-01-10', completed: false },
+            { id: 2, description: 'Follow up with potential clients', dueDate: '2023-01-15', completed: false },
+            // Add more dummy task data as needed
+        ];
+
+        // Function to populate the task list with dummy data
+        function populateTaskList(tasks) {
+            const taskList = document.getElementById('taskList');
+
+            tasks.forEach(task => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <div class="task-description">${task.description}</div>
+                    <div class="task-due-date">Due Date: ${task.dueDate ? task.dueDate : 'Not specified'}</div>
+                    <div class="task-actions">
+                        <input type="checkbox" id="taskCheckbox-${task.id}" ${task.completed ? 'checked' : ''}>
+                        <label for="taskCheckbox-${task.id}">Completed</label>
+                    </div>
+                `;
+                taskList.appendChild(listItem);
+
+                // Add event listener to handle task completion
+                const checkbox = listItem.querySelector(`#taskCheckbox-${task.id}`);
+                checkbox.addEventListener('change', () => {
+                    updateTaskCompletion(task.id, checkbox.checked);
+                });
+            });
+        }
+
+        // Function to update task completion status
+        function updateTaskCompletion(taskId, completed) {
+            // For simplicity, this example just updates the task status in the dummy data.
+            const taskToUpdate = dummyTasks.find(task => task.id === taskId);
+            if (taskToUpdate) {
+                taskToUpdate.completed = completed;
+            }
+        }
+
+        // Populate the task list with dummy data on page load
+        populateTaskList(dummyTasks);
+
+        // Handle form submission to add a new task
+        document.getElementById('addTaskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // For simplicity, this example just adds a new task to the list with the form data.
+            const formData = new FormData(event.target);
+            const taskDescription = formData.get('task');
+            const dueDate = formData.get('dueDate');
+            const taskId = dummyTasks.length + 1; // Use a simple increment for demonstration
+
+            addTaskToList({ id: taskId, description: taskDescription, dueDate, completed: false });
+            event.target.reset();
+        });
+
+        // Function to add a new task to the list
+        function addTaskToList(task) {
+            const taskList = document.getElementById('taskList');
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <div class="task-description">${task.description}</div>
+                <div class="task-due-date">Due Date: ${task.dueDate ? task.dueDate : 'Not specified'}</div>
+                <div class="task-actions">
+                    <input type="checkbox" id="taskCheckbox-${task.id}">
+                    <label for="taskCheckbox-${task.id}">Completed</label>
+                </div>
+            `;
+            taskList.prepend(listItem); // Add new task at the beginning of the list
+
+            // Add event listener to handle task completion
+            const checkbox = listItem.querySelector(`#taskCheckbox-${task.id}`);
+            checkbox.addEventListener('change', () => {
+                updateTaskCompletion(task.id, checkbox.checked);
+            });
+        }
+
+            // Function to add a new customer to the list
+    function addCustomerToList(customer) {
+        const customerTableBody = document.getElementById('customerTableBody');
+        const newRow = customerTableBody.insertRow();
+
+        newRow.innerHTML = `
+            <td>${customer.id}</td>
+            <td>${customer.name}</td>
+            <td>${customer.email}</td>
+            <td>${customer.phone}</td>
+        `;
+    }
+
+    // Handle form submission to add a new customer
+    document.getElementById('addCustomerForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // For simplicity, this example just adds a new customer to the list with the form data.
+        const formData = new FormData(event.target);
+        const customerName = formData.get('name');
+        const customerEmail = formData.get('email');
+        const customerPhone = formData.get('phone');
+
+        const newCustomerId = dummyCustomers.length + 1; // Replace with actual logic to generate unique ID
+        const newCustomer = { id: newCustomerId, name: customerName, email: customerEmail, phone: customerPhone };
+
+        addCustomerToList(newCustomer);
+        closeAddCustomerModal(); // Close the modal after adding a customer
+        event.target.reset();
+    });
+
+    </script>
+
+</body>
+</html>
